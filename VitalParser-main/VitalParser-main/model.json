@@ -1,0 +1,32 @@
+[
+  {
+    "name":        "Predicción hTA",
+    "path":        "models/gb_model_pruebas.joblib",
+    "input_type":  "tabular",
+    "input_vars":  ["Demo/ART","Demo/ECG","Demo/CVP","Demo/EEG","Demo/PLETH","Demo/CO2"],
+    "output_var":  "Prediccion 1",
+    "window_size": 1
+  },
+  {
+    "name":           "Prueba HPI (wave)",
+    "path":           "models/model_hpi.joblib",
+    "input_type":     "wave",
+    "signal_track":   "Demo/ART",
+    "signal_length":  2000,
+    "resample_rate":  100,   
+    "interval_secs":  20,    
+    "overlap_secs":   10,    
+    "output_var":     "HTI"
+  },
+  {
+    "name":           "PLETH - Predicción Presión Arterial",
+    "path":           "models/pleth_bp_predictor.py",
+    "input_type":     "wave",
+    "signal_track":   "Demo/PLETH",
+    "signal_length":  500,
+    "resample_rate":  100,
+    "interval_secs":  5,
+    "overlap_secs":   2,
+    "output_var":     "BP_Prediction"
+  }
+]
