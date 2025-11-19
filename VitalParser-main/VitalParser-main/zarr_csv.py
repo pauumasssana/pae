@@ -1,28 +1,14 @@
 import zarr
-import os
+import pandas as pd
 
-def explorar_zarr(ruta_zarr):
-    # Abrimos la raíz del Zarr (puede ser una carpeta en disco)
-    raiz = zarr.open(ruta_zarr, mode='r')
+def zarr_signal_to_csv(zarr_path, signal_name, output_csv):
+    zroot = zarr.open(zarr_path, mode='r')  # <--- Cambiado!
+    base = f"signals/Intellivue/{signal_name}"
+    timestamps = zroot[f"{base}/time_ms"][:]
+    values = zroot[f"{base}/value"][:]
+    df = pd.DataFrame({'timestamp': timestamps, 'value': values})
+    df.to_csv(output_csv, index=False)
+    return df.head()
 
-    # Recorrer zonas (primer nivel de carpetas)
-    for zona in raiz.group_keys():
-        print(f'Zona: {zona}')
-        grupo_zona = raiz[zona]
-
-        # Recorrer personas dentro de una zona
-        for persona in grupo_zona.group_keys():
-            print(f'  Persona: {persona}')
-            grupo_persona = grupo_zona[persona]
-
-            # Listar variables (tipos de valores y timestamps)
-            for variable in grupo_persona.array_keys():
-                print(f'    Variable: {variable}')
-                
-                # Acceder a los datos (array)
-                datos = grupo_persona[variable][:]
-                print(f'      Datos: {datos}')  # Puedes adaptar aquí cómo quieres manejarlos
-
-# Uso
-ruta = 'ruta/al/archivo.zarr'  # Cambia por tu ruta
-explorar_zarr(ruta)
+# Ejemplo:
+zarr_signal_to_csv('test_alg.zarr', 'ABP_HR', 'abp_hr_signal.csv')
