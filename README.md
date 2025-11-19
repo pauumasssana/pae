@@ -1,2 +1,2 @@
 # pae_paumassana
-iñigo putero
+Project with Hospital Clinic de Barcelona
