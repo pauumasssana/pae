@@ -1,0 +1,69 @@
+import time
+from Streaming import monitorizar_actualizacion_recurso
+from Algorithms import ejecutar_algoritmos
+from Front import actualizar_interfaz
+
+def seleccionar_modo_gui():
+    try:
+        import tkinter as tk
+    except Exception:
+        try:
+            return input("Selecciona modo (online/offline): ")
+        except Exception:
+            return None
+
+    selection = {'mode': None}
+    root = tk.Tk()
+    root.title('Seleccionar modo')
+    root.resizable(False, False)
+
+    width = 300
+    height = 120
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    x = int((screen_width / 2) - (width / 2))
+    y = int((screen_height / 2) - (height / 2))
+    root.geometry(f"{width}x{height}+{x}+{y}")
+
+    def set_mode(m):
+        selection['mode'] = m
+        root.quit()
+
+    lbl = tk.Label(root, text='Selecciona modo:')
+    lbl.pack(pady=(12, 6))
+    frm = tk.Frame(root)
+    frm.pack(pady=(0, 8))
+
+    btn_off = tk.Button(frm, text='Offline', width=10, command=lambda: set_mode('offline'))
+    btn_off.pack(side='left', padx=10)
+    btn_on = tk.Button(frm, text='Online', width=10, command=lambda: set_mode('online'))
+    btn_on.pack(side='left', padx=10)
+    root.protocol('WM_DELETE_WINDOW', lambda: set_mode(None))
+
+    root.mainloop()
+    try:
+        root.destroy()
+    except Exception:
+        pass
+
+    return selection['mode']
+
+def main():
+    modo = seleccionar_modo_gui()
+
+    if modo is None:
+        print("No se seleccionó modo. Saliendo.")
+        return
+
+    if modo == "offline":
+        print("Modo offline activado. Esperando acciones...")
+        while True:
+            time.sleep(1)
+    elif modo == "online":
+        print("Modo online activado. Iniciando interfaz gráfica...")
+        import Interface  # Aquí lanzas Interface.py **solo para modo online**
+    else:
+        print("Modo no reconocido. Saliendo.")
+
+if __name__ == '__main__':
+    main()
