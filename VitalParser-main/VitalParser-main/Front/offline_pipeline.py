@@ -21,13 +21,13 @@ def run_offline_pipeline(
     algoritmos: list[str],
     constantes: list[str],
     *,
-    vital_alg_out: str = "./Offline/offline_algoritmos.vital",
+    vital_alg_out_path: str = "./Offline/offline_algoritmos.vital",
     vital_const_out_path: str = "./Offline/offline_constantes.vital",
 ) -> dict:
     """
     Ejecuta todo el flujo offline y devuelve rutas de salida.
     """
-
+    algoritmos_av = ["SI","CO","CPO","DP","DC","EAE","RI","SVR","CORE","SKIN"]  # Algoritmos seleccionados por el usuario
     # -------------------------------
     # 1) .vital de algoritmos
     # -------------------------------
@@ -56,7 +56,7 @@ def run_offline_pipeline(
             elif algorithm == 'Effective Arterial Elastance':
                 results['Effective Arterial Elastance'] = EffectiveArterialElastance(vf).values
 
-        # Crear un nuevo VitalFile para los algoritmos
+        
         output_dir = "./CSV"  # o la carpeta que estés usando
         os.makedirs(output_dir, exist_ok=True)
 
@@ -65,8 +65,8 @@ def run_offline_pipeline(
             df_out = df_algo.copy()
 
             # Renombrar columna timestamp -> time si existe
-            if "timestamp" in df_out.columns:
-                df_out = df_out.rename(columns={"timestamp": "time"})
+            if "Timestamp" in df_out.columns:
+                df_out = df_out.rename(columns={"Timestamp": "time"})
 
             # Nombre de archivo: p.ej. "Shock Index" -> "ShockIndex.csv"
             safe_name = algo_name.replace(" ", "")
@@ -80,9 +80,15 @@ def run_offline_pipeline(
             df_out.to_csv(csv_path, index=False)
             print(f"Guardado CSV de {algo_name} en: {csv_path}")
 
+        alg_no_space = [s.replace(" ", "") for s in algoritmos]
+
+        merge_selected_csv(alg_no_space, output_dir, "./CSV/merged_algorithms.csv")
+        freq = calcular_intervalos_tiempo("./CSV/merged_algorithms.csv")
+        vital_alg = vitaldb.read_csv("./CSV/merged_algorithms.csv", track_names=alg_no_space, exclude=None, interval=freq)
+        vital_alg.to_vital(vital_alg_out_path, compresslevel=1)
 
     else:
-        vital_alg_out = None
+        vital_alg_out_path = None
 
     # -------------------------------
     # 2) .vital de constantes
@@ -95,6 +101,6 @@ def run_offline_pipeline(
     # (opcional) borrar vital_const_trimmed más adelante
 
     return {
-        "alg_vital_path": vital_alg_out,
+        "alg_vital_path": vital_alg_out_path,
         "const_vital_path": vital_const_out_path ,
     }

@@ -1,9 +1,10 @@
-import numpy as np
+
 import pandas as pd
-import time
+import subprocess
 import os
 from datetime import datetime
-import csv
+
+VITALRECORDER_EXE = "./Vital.exe"  # ajusta la ruta
 
 def obtener_nombres_columnas(csv_path):
     df = pd.read_csv(csv_path)
@@ -149,3 +150,14 @@ def datetime_to_unix(dt: datetime, unit: str = "s") -> float:
         return ts * 1_000_000.0
     else:
         raise ValueError("unit must be 's', 'ms' or 'us'")
+    
+def open_in_vitalrecorder(vital_path: str):
+    if not vital_path or not os.path.isfile(vital_path):
+        print(f"Aviso: no existe el archivo {vital_path}, no se puede abrir en VitalRecorder.")
+        return
+    try:
+        subprocess.Popen([VITALRECORDER_EXE, vital_path])
+        print(f"Abierto en VitalRecorder: {vital_path}")
+    except Exception as e:
+        print(f"Error al abrir VitalRecorder con {vital_path}: {e}")
+

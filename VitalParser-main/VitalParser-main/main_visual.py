@@ -2,6 +2,11 @@ import tkinter as tk
 from Front.Interface import RealTimeApp
 from Front.offline_windows import run_offline_wizard
 from Front.offline_pipeline import run_offline_pipeline  # tu pipeline de .vital
+import subprocess
+import os
+from utils_offline import open_in_vitalrecorder
+VITALRECORDER_EXE = r"C:\Program Files\VitalRecorder\VitalRecorder.exe"  # ajusta la ruta
+
 
 # from Streaming import monitorizar_actualizacion_recurso
 # from Algorithms import ejecutar_algoritmos
@@ -102,7 +107,8 @@ def main():
             print("Constantes .vital:", res["const_vital_path"])
 
             #Ejecutar VitalRecorder
-
+            open_in_vitalrecorder(res["alg_vital_path"])
+            open_in_vitalrecorder(res["const_vital_path"])
             continue
 
 
