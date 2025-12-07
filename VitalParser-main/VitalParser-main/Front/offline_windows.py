@@ -243,124 +243,10 @@ class SignalsWindow(tk.Toplevel):
             algoritmos = ["No algorithms available in this file"]
 
         # ---------------- Constantes (como antes) ----------------
-        constantes = [
-            "ABP",
-            "ABP_DIA",
-            "ABP_HR",
-            "ABP_MEAN",
-            "ABP_SYS",
-            "AOP",
-            "ART",
-            "ART_DIA",
-            "ART_MEAN",
-            "ART_SYS",
-            "AWAY_CO2_ET",
-            "AWAY_CO2_INSP_MIN",
-            "AWP_WAV",
-            "BP_DIA",
-            "BP_MEAN",
-            "BP_SYS",
-            "BT_BLD",
-            "BT_CORE",
-            "BT_SKIN",
-            "CARD_FUNC_INDEX",
-            "CI",
-            "CI_CTS",
-            "CO",
-            "CO2",
-            "CO_CTS",
-            "CVP",
-            "CVP_DIA",
-            "CVP_MEAN",
-            "CVP_SYS",
-            "ECG_AI_WAV",
-            "ECG_AS_WAV",
-            "ECG_AVF",
-            "ECG_AVL",
-            "ECG_AVR",
-            "ECG_AVR_WAV",
-            "ECG_ES_WAV",
-            "ECG_HR",
-            "ECG_I",
-            "ECG_II",
-            "ECG_III",
-            "ECG_III_WAV",
-            "ECG_II_WAV",
-            "ECG_I_WAV",
-            "ECG_MCL",
-            "ECG_V",
-            "ECG_VPC_CNT",
-            "ECG_V_WAV",
-            "EEG",
-            "EEG_BIS",
-            "EEG_BIS_ASYM",
-            "EEG_BIS_SQI",
-            "EEG_RATIO_SUPPRN",
-            "EMG_ELEC_POTL_MUSCL",
-            "FIO2",
-            "FLOW_WAV",
-            "FRACT_EJECT",
-            "HR",
-            "ICP",
-            "ICP_MEAN",
-            "LAP_MEAN",
-            "MV_EXP",
-            "MV_INSP",
-            "NIBP_DIA",
-            "NIBP_HR",
-            "NIBP_MEAN",
-            "NIBP_SYS",
-            "PAP_DIA",
-            "PAP_MEAN",
-            "PAP_SYS",
-            "PEEP_CMH2O",
-            "PIP_CMH2O",
-            "PLETH",
-            "PLETH_HR",
-            "PLETH_PERF_REL",
-            "PLETH_SAT_O2",
-            "PPLAT_CMH2O",
-            "PPV",
-            "PRESS_CEREB_PERF",
-            "PTC_CNT",
-            "RESP",
-            "RR",
-            "ST_AVF",
-            "ST_AVL",
-            "ST_AVR",
-            "ST_I",
-            "ST_II",
-            "ST_III",
-            "ST_INDEX",
-            "ST_MCL",
-            "ST_V",
-            "ST_V1",
-            "ST_V2",
-            "ST_V3",
-            "ST_V4",
-            "ST_V5",
-            "ST_V6",
-            "TEMP",
-            "TOF1",
-            "TOF2",
-            "TOF3",
-            "TOF4",
-            "TOF_CNT",
-            "TOF_RATIO",
-            "TV_EXP",
-            "TV_INSP",
-            "VENT_RR",
-            "VENT_RR_SPONT",
-            "VOL_BLD_INTRA_THOR",
-            "VOL_BLD_INTRA_THOR_INDEX",
-            "VOL_BLD_STROKE",
-            "VOL_BLD_STROKE_INDEX",
-            "VOL_BLD_STROKE_VAR",
-            "VOL_GLOBAL_END_DIA",
-            "VOL_GLOBAL_END_DIA_INDEX",
-            "VOL_LUNG_WATER_EXTRA_VASC",
-            "VOL_LUNG_WATER_EXTRA_VASC_INDEX",
-        ]
+
+        tracks_sin_prefijo = [t.removeprefix("Intellivue/") for t in tracks]
+
+        constantes = tracks_sin_prefijo
 
         # ---------------- UI listas ----------------
         lists_frame = tk.LabelFrame(self, text="Selección de señales")
@@ -417,6 +303,8 @@ class SignalsWindow(tk.Toplevel):
         # Botones
         btn_frame = tk.Frame(self)
         btn_frame.pack(pady=5)
+        tk.Button(btn_frame, text="Seleccionar todo", width=15,
+            command=self.select_all).pack(side="left", padx=5)
 
         tk.Button(btn_frame, text="Aceptar", width=10,
                   command=self.on_ok).pack(side="left", padx=5)
@@ -426,6 +314,14 @@ class SignalsWindow(tk.Toplevel):
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
         self.grab_set()
         self.focus_set()
+
+    def select_all(self):
+        """Selecciona todos los algoritmos y todas las constantes."""
+        # Algoritmos
+        self.list_algos.selection_set(0, tk.END)
+        # Constantes
+        self.list_consts.selection_set(0, tk.END)
+
 
     def on_ok(self):
         sel_algos = [self.list_algos.get(i) for i in self.list_algos.curselection()]
