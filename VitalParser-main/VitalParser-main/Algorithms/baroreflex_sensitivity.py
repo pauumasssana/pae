@@ -2,12 +2,12 @@ import vitaldb
 import numpy as np
 from scipy.stats import linregress
 from scipy.signal import find_peaks
-from compute_rr import compute_rr
+from Algorithms.compute_rr import compute_rr
 import pandas as pd
 
 class BaroreflexSensitivity:
     
-    def __init__(self,data):
+    def __init__(self):
         
         self.last2_rr = []
         self.last2_sbp = []

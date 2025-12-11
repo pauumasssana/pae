@@ -5,7 +5,7 @@ import os
 from tkinter import ttk
 import vitaldb
 
-BOXES_ROOT = "./Front/Boxes" #Ruta archivos de ejemplo
+BOXES_ROOT = "./Front/Boxes" #Ruta donde se encuentran los boxes-> pacientes-> respectivos archivos.vital
 
 print("Ruta absoluta:", os.path.abspath(BOXES_ROOT))
 if not os.path.isdir(BOXES_ROOT):
@@ -51,7 +51,7 @@ class BoxPatientWindow(tk.Toplevel):
         if os.path.isdir(self.boxes_root):
             for name in os.listdir(self.boxes_root):
                 full = os.path.join(self.boxes_root, name)
-                if os.path.isdir(full) and name.startswith("Box_"):
+                if os.path.isdir(full) and name.startswith("Box_"): #Box_ se cambia por lo que corresponda
                     boxes.append(name)
         boxes.sort()
         self.combo_box["values"] = boxes
@@ -102,8 +102,7 @@ class BoxPatientWindow(tk.Toplevel):
         if os.path.isdir(box_path):
             for name in os.listdir(box_path):
                 full = os.path.join(box_path, name)
-                # Asumimos que cualquier carpeta que empieza por UID es un paciente
-                if os.path.isdir(full) and name.startswith("UID"):
+                if os.path.isdir(full) and name.startswith("UID"): #UID se cambia por lo que corresponda
                     patients.append(name)
         patients.sort()
         self.combo_patient["values"] = patients

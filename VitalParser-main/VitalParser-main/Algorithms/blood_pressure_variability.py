@@ -2,7 +2,7 @@ from vitaldb import VitalFile
 import numpy as np
 import pandas as pd
 
-from compute_rr import compute_rr
+from Algorithms.compute_rr import compute_rr
 
 SAMPLING_RATE = 500  # Hz
 WINDOW_SIZE_RR = 5  # Number of RR intervals in each window
