@@ -75,12 +75,10 @@ def run_offline_pipeline(
             elif algorithm == 'BRS':
                 brs = BaroreflexSensitivity()
                 df_brs = brs.compute(vf)
-                print("BRS filas:", len(df_brs))
                 results['BRS'] = df_brs
             elif algorithm == 'RSA':
                 rsa = RespiratorySinusArrhythmia()
                 df_rsa = rsa.compute(vf)
-                print("RSA filas:", len(df_rsa))
                 results['RSA'] = df_rsa
 
 
