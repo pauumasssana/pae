@@ -1,7 +1,5 @@
-from datetime import datetime
-
 # IMPORTA AQUÍ TUS FUNCIONES REALES
-from utils_offline import merge_selected_csv, calcular_intervalos_tiempo, trim_algorithms_csv_by_time, datetime_to_unix
+from utils_offline import merge_selected_csv, calcular_intervalos_tiempo
 import vitaldb
 import os
 from Algorithms.check_availability import check_availability
@@ -88,7 +86,7 @@ def run_offline_pipeline(
 
             
          
-        output_dir = carpeta_paciente_analisis + "/CSV"  # o la carpeta que estés usando
+        output_dir = carpeta_paciente_analisis + "/algorithms_CSV"  # o la carpeta que estés usando
         os.makedirs(output_dir, exist_ok=True)
 
         for algo_name, df_algo in results.items():

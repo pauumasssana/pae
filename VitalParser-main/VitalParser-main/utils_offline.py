@@ -6,6 +6,13 @@ from datetime import datetime
 
 VITALRECORDER_EXE = "./Vital.exe"  # ajusta la ruta
 
+def open_in_vitalrecorder(vital_path: str):
+    if not os.path.isfile(vital_path):
+        print(f"Aviso: no existe el archivo {vital_path}")
+        return None
+    return subprocess.Popen([VITALRECORDER_EXE, vital_path])
+
+
 def obtener_nombres_columnas(csv_path):
     df = pd.read_csv(csv_path)
     # Excluye la primera columna y devuelve el resto de los nombres
@@ -79,85 +86,4 @@ def merge_selected_csv(names, directory, output):
     else:
         print("No se pudieron fusionar CSV (ningún archivo válido).")
 
-
-def trim_algorithms_csv_by_time(
-    csv_in: str,
-    csv_out: str,
-    start_dt: datetime,
-    end_dt: datetime,
-    *,
-    unix_unit: str = "s",   # OJO: "s" si time está como 1761200453.64
-):
-    if not os.path.isfile(csv_in):
-        print(f"Aviso: no existe el archivo {csv_in}.")
-        return
-
-    df = pd.read_csv(csv_in)
-
-    if "time" not in df.columns:
-        print(f"Aviso: {csv_in} no tiene columna 'time'. Columnas: {df.columns.tolist()}")
-        return
-
-    # Asegurar numérico
-    df["time"] = pd.to_numeric(df["time"], errors="coerce")
-
-    print("Primeras filas del CSV:")
-    print(df.head())
-
-    # datetime -> segundos Unix
-    start_ts = start_dt.timestamp()
-    end_ts = end_dt.timestamp()
-
-    # Ajustar a unidad real de la columna
-    if unix_unit == "ms":
-        start_ts *= 1000.0
-        end_ts *= 1000.0
-
-    print(f"start_dt = {start_dt} -> {start_ts}")
-    print(f"end_dt   = {end_dt} -> {end_ts}")
-    print(f"Rango 'time' en CSV: min={df['time'].min()}, max={df['time'].max()}")
-
-    mask = (df["time"] >= start_ts) & (df["time"] <= end_ts)
-    df_trimmed = df.loc[mask].copy()
-
-    print(f"Filas totales: {len(df)}, filas dentro de rango: {len(df_trimmed)}")
-
-    if df_trimmed.empty:
-        print("Aviso: ningún dato dentro del rango de tiempo especificado.")
-        return
-
-    df_trimmed.to_csv(csv_out, index=False)
-    print(f"CSV recortado guardado en: {csv_out}")
-
-from datetime import datetime
-
-def datetime_to_unix(dt: datetime, unit: str = "s") -> float:
-    """
-    Convierte un datetime a Unix timestamp.
-
-    unit:
-      - "s"  -> segundos (float)
-      - "ms" -> milisegundos
-      - "us" -> microsegundos
-    """
-    ts = dt.timestamp()  # segundos desde epoch, con decimales
-
-    if unit == "s":
-        return ts
-    elif unit == "ms":
-        return ts * 1000.0
-    elif unit == "us":
-        return ts * 1_000_000.0
-    else:
-        raise ValueError("unit must be 's', 'ms' or 'us'")
-    
-def open_in_vitalrecorder(vital_path: str):
-    if not vital_path or not os.path.isfile(vital_path):
-        print(f"Aviso: no existe el archivo {vital_path}, no se puede abrir en VitalRecorder.")
-        return
-    try:
-        subprocess.Popen([VITALRECORDER_EXE, vital_path])
-        print(f"Abierto en VitalRecorder: {vital_path}")
-    except Exception as e:
-        print(f"Error al abrir VitalRecorder con {vital_path}: {e}")
 
